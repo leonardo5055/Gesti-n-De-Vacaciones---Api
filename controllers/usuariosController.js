@@ -20,7 +20,6 @@ exports.login = async (req, res) => {
 
         // Verificar la contraseña
         const veriContra = password === usuario.password;
-        console.log(veriContra)
 
         if (!veriContra) {
             return res.status(401).json({ message: 'contraseña incorrectas' });
