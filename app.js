@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
 const empleadosRoutes = require('./routes/empleados');
 const vacacionesRoutes = require('./routes/vacaciones');
@@ -12,7 +13,7 @@ app.use('/api/vacaciones', vacacionesRoutes);
 app.use('/api/usuarios', usuariosRoutes); // Usar rutas de usuarios
 
 // Servidor
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.DB_PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`);
 });
