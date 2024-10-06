@@ -37,5 +37,6 @@ exports.login = async (req, res) => {
                 rol
             }
         });
+        console.log("POST de usuarios")
     });
 };
