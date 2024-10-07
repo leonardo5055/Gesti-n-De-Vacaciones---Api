@@ -7,9 +7,9 @@ const usuariosRoutes = require('./routes/usuarios'); // Importar rutas de usuari
 const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 
 // Rutas
-app.use(cors());
 app.use('/api/empleados', empleadosRoutes);
 app.use('/api/vacaciones', vacacionesRoutes);
 app.use('/api/usuarios', usuariosRoutes); // Usar rutas de usuarios
