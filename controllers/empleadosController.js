@@ -1,3 +1,4 @@
+//controllers/empleadosController.js
 const db = require('../config/db');
 
 // Obtener todos los empleados
@@ -21,5 +22,23 @@ exports.createEmpleado = (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         res.json({ message: 'Empleado creado', empleadoId: results.insertId });
+    });
+};
+
+// Obtener un empleado por ID
+exports.getEmpleadoById = (req, res) => {
+    const empleadoId = req.params.id;  // Obtenemos el ID desde los parámetros de la URL
+    const query = 'SELECT * FROM Empleados WHERE empleado_id = ?';  // Consulta SQL para obtener el empleado
+
+    db.query(query, [empleadoId], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Empleado no encontrado' });
+        }
+
+        res.json(results[0]);  // Retornamos el empleado encontrado
     });
 };

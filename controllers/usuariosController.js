@@ -1,41 +1,46 @@
+// controllers/usuariosController.js
 const db = require('../config/db');
 
-// Iniciar sesión
-exports.login = async (req, res) => {
+// Controlador para iniciar sesión
+exports.login = (req, res) => {
     const { email, password } = req.body;
 
-    const query = 'SELECT * FROM vacaciones.Usuarios WHERE email = ?';
+    // Consulta para verificar las credenciales y obtener la información del empleado
+    const query = `
+        SELECT u.usuario_id, u.empleado_id, u.email, u.rol,
+               e.nombres, e.apellidos, e.fecha_contratacion, e.celular, e.avatar, e.cargo, e.dias_vacaciones_acumulados
+        FROM Usuarios u
+        JOIN Empleados e ON u.empleado_id = e.empleado_id
+        WHERE u.email = ? AND u.password = ?
+    `;
 
-    db.query(query, [email], async (err, results) => {
+    db.query(query, [email, password], (err, results) => {
         if (err) {
-            console.error(err); // Muestra el error en la consola
             return res.status(500).json({ error: err.message });
         }
 
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Credenciales incorrectas' });
+        if (results.length > 0) {
+            // Suponiendo que results[0] es el usuario autenticado
+            const usuario = results[0];
+            res.json({
+                success: true,
+                usuario: {
+                    usuario_id: usuario.usuario_id,
+                    empleado_id: usuario.empleado_id,
+                    email: usuario.email,
+                    rol: usuario.rol,
+                    nombres: usuario.nombres,
+                    apellidos: usuario.apellidos,
+                    fecha_contratacion: usuario.fecha_contratacion,
+                    celular: usuario.celular,
+                    avatar: usuario.avatar,
+                    cargo: usuario.cargo,
+                    dias_vacaciones_acumulados: usuario.dias_vacaciones_acumulados
+                },
+            });
+            console.log("llamado de api validar usuario")
+        } else {
+            res.status(401).json({ success: false, message: 'Credenciales inválidas' });
         }
-
-        const usuario = results[0];
-
-        // Verificar la contraseña
-        const veriContra = password === usuario.password;
-
-        if (!veriContra) {
-            return res.status(401).json({ message: 'contraseña incorrectas' });
-        }
-
-        // Devolver datos del usuario (sin el password)
-        const { usuario_id, empleado_id, rol } = usuario;
-
-        res.json({
-            message: 'Inicio de sesión exitoso',
-            usuario: {
-                usuario_id,
-                empleado_id,
-                rol
-            }
-        });
-        console.log("POST de usuarios")
     });
 };
