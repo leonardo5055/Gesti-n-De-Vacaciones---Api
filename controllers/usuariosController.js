@@ -1,5 +1,6 @@
 // controllers/usuariosController.js
 const db = require('../config/db');
+const moment = require('moment'); // Asegúrate de instalar moment.js
 
 // Controlador para iniciar sesión
 exports.login = (req, res) => {
@@ -8,27 +9,29 @@ exports.login = (req, res) => {
     // Consulta para verificar las credenciales y obtener la información del empleado
     const query = `
         SELECT 
-    u.usuario_id, 
-    u.empleado_id, 
-    u.email, 
-    u.rol,
-    e.nombres, 
-    e.apellidos, 
-    e.fecha_nacimiento,  -- Si es necesario, ajusta según tus necesidades
-    e.fecha_contratacion, 
-    e.celular, 
-    e.avatar, 
-    e.cargo_id,  -- También puedes obtener el cargo_id si es necesario
-    e.dias_vacaciones_acumulados
-FROM 
-    Usuarios u
-JOIN 
-    Empleados e ON u.empleado_id = e.empleado_id
-WHERE 
-    u.email = ? 
-AND 
-    u.password = ?;  -- Aquí deberías usar el hash de la contraseña si lo has almacenado como hash
-
+            u.usuario_id, 
+            u.empleado_id, 
+            u.email, 
+            u.rol,
+            e.nombres, 
+            e.apellidos, 
+            e.fecha_nacimiento, 
+            e.fecha_contratacion, 
+            e.celular, 
+            e.avatar, 
+            e.cargo_id, 
+            e.dias_vacaciones_acumulados,
+            c.cargo  -- Trae el nombre del cargo
+        FROM 
+            Usuarios u
+        JOIN 
+            Empleados e ON u.empleado_id = e.empleado_id
+        JOIN 
+            Cargos c ON e.cargo_id = c.cargo_id  -- Unir con la tabla Cargos para obtener el nombre del cargo
+        WHERE 
+            u.email = ? 
+        AND 
+            u.password = ?;  -- Asegúrate de usar el hash de la contraseña
     `;
 
     db.query(query, [email, password], (err, results) => {
@@ -48,14 +51,16 @@ AND
                     rol: usuario.rol,
                     nombres: usuario.nombres,
                     apellidos: usuario.apellidos,
-                    fecha_contratacion: usuario.fecha_contratacion,
+                    fecha_nacimiento: moment(usuario.fecha_nacimiento).format('YYYY-MM-DD'), // Formato deseado
+                    fecha_contratacion: moment(usuario.fecha_contratacion).format('YYYY-MM-DD'), // Formato deseado
                     celular: usuario.celular,
                     avatar: usuario.avatar,
+                    cargo_id: usuario.cargo_id,
                     cargo: usuario.cargo,
                     dias_vacaciones_acumulados: usuario.dias_vacaciones_acumulados
                 },
             });
-            console.log("llamado de api validar usuario")
+            console.log("Llamado de API para validar usuario");
         } else {
             res.status(401).json({ success: false, message: 'Credenciales inválidas' });
         }
