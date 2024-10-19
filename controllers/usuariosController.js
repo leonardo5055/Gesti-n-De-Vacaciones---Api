@@ -51,8 +51,8 @@ exports.login = (req, res) => {
                     rol: usuario.rol,
                     nombres: usuario.nombres,
                     apellidos: usuario.apellidos,
-                    fecha_nacimiento: moment(usuario.fecha_nacimiento).format('YYYY-MM-DD'), // Formato deseado
-                    fecha_contratacion: moment(usuario.fecha_contratacion).format('YYYY-MM-DD'), // Formato deseado
+                    fecha_nacimiento: moment(usuario.fecha_nacimiento).format('DD-MM-YYYY'), // Formato deseado
+                    fecha_contratacion: moment(usuario.fecha_contratacion).format('DD-MM-YYYY'), // Formato deseado
                     celular: usuario.celular,
                     avatar: usuario.avatar,
                     cargo_id: usuario.cargo_id,
