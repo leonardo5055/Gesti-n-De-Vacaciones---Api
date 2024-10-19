@@ -7,11 +7,28 @@ exports.login = (req, res) => {
 
     // Consulta para verificar las credenciales y obtener la información del empleado
     const query = `
-        SELECT u.usuario_id, u.empleado_id, u.email, u.rol,
-               e.nombres, e.apellidos, e.fecha_contratacion, e.celular, e.avatar, e.cargo, e.dias_vacaciones_acumulados
-        FROM Usuarios u
-        JOIN Empleados e ON u.empleado_id = e.empleado_id
-        WHERE u.email = ? AND u.password = ?
+        SELECT 
+    u.usuario_id, 
+    u.empleado_id, 
+    u.email, 
+    u.rol,
+    e.nombres, 
+    e.apellidos, 
+    e.fecha_nacimiento,  -- Si es necesario, ajusta según tus necesidades
+    e.fecha_contratacion, 
+    e.celular, 
+    e.avatar, 
+    e.cargo_id,  -- También puedes obtener el cargo_id si es necesario
+    e.dias_vacaciones_acumulados
+FROM 
+    Usuarios u
+JOIN 
+    Empleados e ON u.empleado_id = e.empleado_id
+WHERE 
+    u.email = ? 
+AND 
+    u.password = ?;  -- Aquí deberías usar el hash de la contraseña si lo has almacenado como hash
+
     `;
 
     db.query(query, [email, password], (err, results) => {
