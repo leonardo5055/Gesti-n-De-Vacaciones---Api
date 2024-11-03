@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // Obtener todas las solicitudes de vacaciones
 exports.getAllVacaciones = (req, res) => {
-    const query = `SELECT * FROM Vacaciones
+    const query = `SELECT * FROM vacaciones.Vacaciones
 ORDER BY vacacion_id DESC;`;
     db.query(query, (err, results) => {
         if (err) {
@@ -15,7 +15,7 @@ ORDER BY vacacion_id DESC;`;
 // Crear una solicitud de vacaciones
 exports.createVacacion = (req, res) => {
     const { empleado_id, motivo_id, descripcion, fecha_inicio, fecha_fin, dias_solicitados } = req.body;
-    const query = 'INSERT INTO Vacaciones (empleado_id, motivo_id, descripcion, fecha_inicio, fecha_fin, dias_solicitados) VALUES (?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO vacaciones.Vacaciones (empleado_id, motivo_id, descripcion, fecha_inicio, fecha_fin, dias_solicitados) VALUES (?, ?, ?, ?, ?, ?)';
 
     db.query(query, [empleado_id, motivo_id, descripcion, fecha_inicio, fecha_fin, dias_solicitados], (err, results) => {
         if (err) {
