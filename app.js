@@ -4,6 +4,7 @@ const app = express();
 const empleadosRoutes = require('./routes/empleados');
 const vacacionesRoutes = require('./routes/vacaciones');
 const usuariosRoutes = require('./routes/usuarios'); // Importar rutas de usuarios
+const motivosRoutes = require('./routes/motivos');
 const cors = require('cors');
 
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(cors());
 app.use('/api/empleados', empleadosRoutes);
 app.use('/api/vacaciones', vacacionesRoutes);
 app.use('/api/usuarios', usuariosRoutes); // Usar rutas de usuarios
+app.use('/api/motivos', motivosRoutes);
 
 // Servidor
 const PORT = process.env.DB_PORT || 3000;
