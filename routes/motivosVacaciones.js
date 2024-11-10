@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const motivosController = require('../controllers/motivosController');
+const motivosController = require('../controllers/motivosVacacionesController');
 
 // Ruta para obtener todos los motivos
 router.get('/', motivosController.getAllMotivos);

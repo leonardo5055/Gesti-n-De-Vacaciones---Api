@@ -1,3 +1,4 @@
+//controllers/admin/vacacionesControllerAdmin.js
 const db = require('../../config/db');
 
 // Obtener todas las solicitudes de vacaciones
@@ -73,3 +74,74 @@ ORDER BY
         });
     });
 };
+
+// Actualizar el estado de la solicitud de vacaciones (Aprobado o Rechazado)
+exports.updateEstadoVacacion = (req, res) => {
+    console.log("Actualizando estado de la solicitud de vacaciones...");
+
+    // Obtener el ID de la vacación desde los parámetros de la URL
+    const vacacionId = req.params.id;
+    console.log(vacacionId);  // Verifica que el ID se está recibiendo correctamente
+
+    const { estado, descripcion_rechazo } = req.body;
+
+    // Verifica si el estado es "Rechazado" y requiere una descripción de rechazo
+    if (estado === 'Rechazado' && !descripcion_rechazo) {
+        return res.status(400).json({ error: "Se requiere una descripción para el rechazo" });
+    }
+
+    // Si el estado es 'Rechazado', primero insertamos la descripción en la tabla MotivosRechazo
+    if (estado === 'Rechazado') {
+        const insertQuery = `
+            INSERT INTO vacaciones.MotivosRechazo (descripcion) 
+            VALUES (?);
+        `;
+        db.query(insertQuery, [descripcion_rechazo], (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            // Obtener el ID del nuevo motivo de rechazo insertado
+            const motivoRechazoId = result.insertId;
+
+            // Ahora actualizamos la tabla Vacaciones con el motivo_rechazo_id y el estado 'Rechazado'
+            const updateQuery = `
+                UPDATE vacaciones.Vacaciones 
+                SET estado = ?, 
+                    motivo_rechazo_id = ? 
+                WHERE vacacion_id = ?;
+            `;
+            const values = ['Rechazado', motivoRechazoId, vacacionId];
+
+            db.query(updateQuery, values, (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+
+                res.json({
+                    message: "Estado de la solicitud de vacaciones actualizado a Rechazado",
+                    motivo_rechazo_id: motivoRechazoId // Enviar el ID del motivo de rechazo en la respuesta
+                });
+            });
+        });
+    } else if (estado === 'Aprobado') {
+        // Si el estado es 'Aprobado', eliminamos la descripción de rechazo
+        const query = `
+            UPDATE vacaciones.Vacaciones 
+            SET estado = ?, 
+                motivo_rechazo_id = NULL 
+            WHERE vacacion_id = ?;
+        `;
+        const values = [estado, vacacionId];
+
+        db.query(query, values, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ message: "Estado de la solicitud de vacaciones actualizado a Aprobado" });
+        });
+    }
+};
+
+
+

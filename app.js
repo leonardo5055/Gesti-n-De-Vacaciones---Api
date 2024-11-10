@@ -1,10 +1,11 @@
+//app.js
 const express = require('express');
 require('dotenv').config();
 const app = express();
 const empleadosRoutes = require('./routes/empleados');
 const vacacionesRoutes = require('./routes/vacaciones');
 const usuariosRoutes = require('./routes/usuarios'); // Importar rutas de usuarios
-const motivosRoutes = require('./routes/motivos');
+const motivosRoutes = require('./routes/motivosVacaciones');
 
 const vacacionesRoutesAdmin = require('./routes/admin/vacacionesAdmin');
 
@@ -21,6 +22,13 @@ app.use('/api/motivos', motivosRoutes);
 
 // Rutas admin
 app.use('/api/admin/vacaciones', vacacionesRoutesAdmin);
+
+
+
+// Middleware para manejar rutas no encontradas
+app.use((req, res, next) => {
+    res.status(404).json({ error: "Ruta no encontrada" });
+});
 
 // Servidor
 const PORT = process.env.DB_PORT || 3000;
