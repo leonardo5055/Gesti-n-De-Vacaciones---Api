@@ -6,6 +6,7 @@ exports.getAllVacaciones = (req, res) => {
     v.vacacion_id, 
     v.empleado_id, 
     v.motivo_id, 
+    m.motivo AS motivo_vacaciones, -- Campo motivo desde la tabla Motivos
     v.descripcion, 
     DATE_FORMAT(v.fecha_inicio, '%d/%m/%Y') AS fecha_inicio, 
     DATE_FORMAT(v.fecha_fin, '%d/%m/%Y') AS fecha_fin, 
@@ -22,6 +23,8 @@ exports.getAllVacaciones = (req, res) => {
         ELSE NULL 
     END AS descripcion_rechazo
 FROM vacaciones.Vacaciones v
+-- JOIN con la tabla Motivos para obtener el campo motivo
+LEFT JOIN vacaciones.Motivos m ON v.motivo_id = m.motivo_id
 -- LEFT JOIN con la tabla MotivosRechazo para obtener los motivos de rechazo
 LEFT JOIN vacaciones.MotivosRechazo mr ON v.motivo_rechazo_id = mr.motivo_rechazo_id
 ORDER BY v.vacacion_id DESC;
