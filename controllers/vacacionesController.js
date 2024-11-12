@@ -5,6 +5,10 @@ exports.getAllVacaciones = (req, res) => {
     const query = `SELECT 
     v.vacacion_id, 
     v.empleado_id, 
+    e.nombres AS nombre_empleado, 
+    e.apellidos AS apellido_empleado,
+    e.avatar, -- Campo avatar del empleado
+    c.cargo, -- Campo cargo desde la tabla Cargos
     v.motivo_id, 
     m.motivo AS motivo_vacaciones, -- Campo motivo desde la tabla Motivos
     v.descripcion, 
@@ -23,12 +27,15 @@ exports.getAllVacaciones = (req, res) => {
         ELSE NULL 
     END AS descripcion_rechazo
 FROM vacaciones.Vacaciones v
+-- JOIN con la tabla Empleados para obtener datos del empleado
+LEFT JOIN vacaciones.Empleados e ON v.empleado_id = e.empleado_id
+-- JOIN con la tabla Cargos para obtener el cargo del empleado
+LEFT JOIN vacaciones.Cargos c ON e.cargo_id = c.cargo_id
 -- JOIN con la tabla Motivos para obtener el campo motivo
 LEFT JOIN vacaciones.Motivos m ON v.motivo_id = m.motivo_id
 -- LEFT JOIN con la tabla MotivosRechazo para obtener los motivos de rechazo
 LEFT JOIN vacaciones.MotivosRechazo mr ON v.motivo_rechazo_id = mr.motivo_rechazo_id
 ORDER BY v.vacacion_id DESC;
-
 `;
     db.query(query, (err, results) => {
         if (err) {
