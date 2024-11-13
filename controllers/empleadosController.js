@@ -36,7 +36,7 @@ exports.createEmpleado = (req, res) => {
 
     try {
         // Comprobar si el email ya está registrado
-        const emailQuery = 'SELECT * FROM Usuarios WHERE email = ?';
+        const emailQuery = 'SELECT * FROM vacaciones.Usuarios WHERE email = ?';
         db.query(emailQuery, [email], async (err, emailResult) => {
             if (err) {
                 return res.status(500).json({ error: 'Error en la verificación de email', details: err.message });
@@ -50,7 +50,7 @@ exports.createEmpleado = (req, res) => {
             // Si el email no existe, proceder con el registro
             // Definir la consulta SQL para insertar el empleado
             const empleadoQuery = `
-                INSERT INTO Empleados (nombres, apellidos, fecha_nacimiento, fecha_contratacion, celular, avatar, cargo_id)
+                INSERT INTO vacaciones.Empleados (nombres, apellidos, fecha_nacimiento, fecha_contratacion, celular, avatar, cargo_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
 
@@ -68,7 +68,7 @@ exports.createEmpleado = (req, res) => {
 
                 // Definir la consulta SQL para insertar el usuario
                 const usuarioQuery = `
-                    INSERT INTO Usuarios (empleado_id, email, password, rol)
+                    INSERT INTO vacaciones.Usuarios (empleado_id, email, password, rol)
                     VALUES (?, ?, ?, ?)
                 `;
 
@@ -79,7 +79,7 @@ exports.createEmpleado = (req, res) => {
                 db.query(usuarioQuery, usuarioValues, (err, usuarioResult) => {
                     if (err) {
                         // Si ocurre un error al crear el usuario, se podría eliminar el empleado creado
-                        db.query('DELETE FROM Empleados WHERE empleado_id = ?', [empleadoId]);
+                        db.query('DELETE FROM vacaciones.Empleados WHERE empleado_id = ?', [empleadoId]);
                         return res.status(500).json({ error: 'Error al insertar usuario', details: err.message });
                     }
 
@@ -100,7 +100,7 @@ exports.createEmpleado = (req, res) => {
 // Obtener un empleado por ID
 exports.getEmpleadoById = (req, res) => {
     const empleadoId = req.params.id;  // Obtenemos el ID desde los parámetros de la URL
-    const query = 'SELECT * FROM Empleados WHERE empleado_id = ?';  // Consulta SQL para obtener el empleado
+    const query = 'SELECT * FROM vacaciones.Empleados WHERE empleado_id = ?';  // Consulta SQL para obtener el empleado
 
     db.query(query, [empleadoId], (err, results) => {
         if (err) {
