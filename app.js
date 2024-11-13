@@ -6,6 +6,7 @@ const empleadosRoutes = require('./routes/empleados');
 const vacacionesRoutes = require('./routes/vacaciones');
 const usuariosRoutes = require('./routes/usuarios'); // Importar rutas de usuarios
 const motivosRoutes = require('./routes/motivosVacaciones');
+const cargoRoutes = require('./routes/cargo');
 
 const vacacionesRoutesAdmin = require('./routes/admin/vacacionesAdmin');
 
@@ -19,6 +20,7 @@ app.use('/api/empleados', empleadosRoutes);
 app.use('/api/vacaciones', vacacionesRoutes);
 app.use('/api/usuarios', usuariosRoutes); // Usar rutas de usuarios
 app.use('/api/motivos', motivosRoutes);
+app.use('/api/cargo', cargoRoutes);
 
 // Rutas admin
 app.use('/api/admin/vacaciones', vacacionesRoutesAdmin);
