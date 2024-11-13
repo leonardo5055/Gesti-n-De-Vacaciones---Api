@@ -28,7 +28,6 @@ exports.getAllEmpleados = (req, res) => {
 exports.createEmpleado = (req, res) => {
     console.log("entro a crear usuarios y empleados")
     const { nombres, apellidos, fecha_nacimiento, fecha_contratacion, celular, cargo_id, email, password, rol } = req.body;
-
     // Validaciones básicas
     if (!nombres || !apellidos || !fecha_nacimiento || !fecha_contratacion || !email || !password || !rol) {
         return res.status(400).json({ error: 'Faltan datos obligatorios' });
