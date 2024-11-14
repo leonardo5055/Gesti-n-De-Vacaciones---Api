@@ -5,14 +5,15 @@ const db = require('../config/db');
 exports.getAllEmpleados = (req, res) => {
     const query = `
         SELECT e.empleado_id, e.nombres, e.apellidos, 
-            DATE_FORMAT(e.fecha_nacimiento, '%d-%m-%y') AS fecha_nacimiento,
-            DATE_FORMAT(e.fecha_contratacion, '%d-%m-%Y') AS fecha_contratacion,
-            e.celular, e.avatar, e.cargo_id, e.dias_vacaciones_acumulados,
-            DATE_FORMAT(e.fecha_creacion, '%d-%m-%Y') AS fecha_creacion,
-            DATE_FORMAT(e.fecha_actualizacion, '%d-%m-%Y') AS fecha_actualizacion,
-            u.email, u.rol
-        FROM Empleados e
-        LEFT JOIN Usuarios u ON e.empleado_id = u.empleado_id;
+       DATE_FORMAT(e.fecha_nacimiento, '%d-%m-%Y') AS fecha_nacimiento,
+       DATE_FORMAT(e.fecha_contratacion, '%d-%m-%Y') AS fecha_contratacion,
+       e.celular, e.avatar, e.cargo_id, c.cargo, e.dias_vacaciones_acumulados,
+       DATE_FORMAT(e.fecha_creacion, '%d-%m-%Y') AS fecha_creacion,
+       DATE_FORMAT(e.fecha_actualizacion, '%d-%m-%Y') AS fecha_actualizacion,
+       u.email, u.rol
+FROM Empleados e
+LEFT JOIN Usuarios u ON e.empleado_id = u.empleado_id
+LEFT JOIN Cargos c ON e.cargo_id = c.cargo_id;
     `;
 
     db.query(query, (err, results) => {
@@ -113,3 +114,5 @@ exports.getEmpleadoById = (req, res) => {
         res.json(results[0]);  // Retornamos el empleado encontrado
     });
 };
+
+

@@ -9,6 +9,7 @@ const motivosRoutes = require('./routes/motivosVacaciones');
 const cargoRoutes = require('./routes/cargo');
 
 const vacacionesRoutesAdmin = require('./routes/admin/vacacionesAdmin');
+const empleadosAdmin = require('./routes/admin/empleadosAdmin');
 
 const cors = require('cors');
 
@@ -24,6 +25,7 @@ app.use('/api/cargo', cargoRoutes);
 
 // Rutas admin
 app.use('/api/admin/vacaciones', vacacionesRoutesAdmin);
+app.use('/api/admin/empleados', empleadosAdmin);
 
 
 
